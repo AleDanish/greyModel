@@ -1,1 +1,3 @@
 # greyModel
+
+bash greyModel.sh
