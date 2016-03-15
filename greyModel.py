@@ -51,4 +51,4 @@ while True:
     print "next value GM - cpu_load: ", cpu_load_GM
     print "next value GM - cpu_util: ", cpu_util_GM
     print "next value GM - mem: ", mem_GM
-    time.sleep(50)
+    time.sleep(60)
