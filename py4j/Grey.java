@@ -17,15 +17,15 @@ public class Grey implements IFilter{
 	}
 	// Costruisco il Grey model GM(1,1) ed effettuo la predizione.
 	// (questo metodo effettua operazioni algebriche con matrci 2*n;
-	// vi consiglio di prenderlo per buono cos� com'�!)
+	// vi consiglio di prenderlo per buono cosi com'e!)
 	public Double nextValue(ArrayList<Double> valueSet){//, double costante){
 		int costante=0;
-		// Il valore "costante", aggiunta in X1, serve a rendere le previsioni pi� graduali
+		// Il valore "costante", aggiunta in X1, serve a rendere le previsioni piu gradua
 		// Infatti quando le previsioni vengono fatte su numeri piccoli, basta una piccola variazioni
 		// per ottenere una predizione a picco. Aggiungendo una costante le predizioni dovrebbero essere
-		// pi� regolari e simili con valori grandi e piccoli.
+		// piu regolari e simili con valori grandi e piccoli.
 		
-		// Se ci sono meno di 4 valori, non � possibile creare GM(1,1)
+		// Se ci sono meno di 4 valori, non e possibile creare GM(1,1)
 		// e restituisco il valore misurato.
 		if (valueSet.size()<4){
 			if(valueSet.size()==0){
