@@ -50,5 +50,5 @@ class CloudOrchestrator():
 
     def delete_stack(self):
         if self.stack_id is None :
-            self.get_stack_id()
-        self.stackManager.delete(self.stack_id)
+            self.stack_id = self.get_stack_id()
+        self.stack_manager.delete(self.stack_id)
