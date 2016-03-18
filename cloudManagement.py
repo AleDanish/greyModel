@@ -40,6 +40,7 @@ class CloudOrchestrator():
     def get_auth_token(self):
         keystone = ksclient.Client(auth_url=auth_url, username=username, password=password, tenant_name=tenant_name)
         token = keystone.auth_ref['token']['id']
+        self.auth_token = token
         return token
 #        self.auth_token = open('/home/ubuntu/authtoken', 'r').read().rstrip()
 #        return self.auth_token
