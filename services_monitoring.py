@@ -14,8 +14,6 @@ zabbix_user='azanni'
 zabbix_pass='azanni'
 trigger_value=3
 
-token='6c47095dd45d40f4bff5443c26044eb4'
-
 class MyList(list):
     def append(self, item):
         list.append(self, item)        
@@ -31,11 +29,12 @@ def getGreyModelValues(composedList):
 
 def moveVM(threadName):
     migrationVM = True
-    co_old = CloudOrchestrator(token)
+    region = "RegionOne"
+    co_old = CloudOrchestrator(region)
     stack = co_old.get_stack()
     print "stack: ", stack
     
-    co_new = CloudOrchestrator(token)
+    co_new = CloudOrchestrator(region)
 
 #    co_old.delete_stack()
     migrationVM = False

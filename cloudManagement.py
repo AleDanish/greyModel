@@ -9,14 +9,14 @@ tenant_id='64969ad482c643cb8439a55e648e5ebb'
 heat_url='http://bart.cloudcomplab.ch:8004/v1/' + tenant_id
 
 class CloudOrchestrator():
-    def __init__(self, auth_token, region):
-        self.auth_token = auth_token
+    def __init__(self, region):
+        self.auth_token = self.get_auth_token()
         heat = Client('1', endpoint=heat_url, token=self.auth_token)
         self.stack_manager = heat.stacks        
         self.stack_id = self.get_stack_id()
         self.stack_list = []
         self.region = region
-        self.auth_token = '6c47095dd45d40f4bff5443c26044eb4'
+        self.auth_token = self.get_auth_token()
 
     def get_stack_list(self):
         if self.stack_manager is None:
@@ -35,14 +35,17 @@ class CloudOrchestrator():
                 return stack
         return None
 
+    def get_auth_token(self):
+        self.auth_token = open('/home/ubuntu/authtoken', 'r').read().rstrip()
+        return self.auth_token
+
     def get_stack_id(self):
-        self.stack_id = open('stack_id', 'r').read().rstrip()
+        self.stack_id = open('/home/ubuntu/stackid', 'r').read().rstrip()
         return self.stack_id
 
     def create_stack(self):
         if self.stack_manager is None:
             self.__init__(self.auth_token)
-
         print "self.stack_manager.create()"
 
     def delete_stack(self):
