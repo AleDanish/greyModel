@@ -14,16 +14,17 @@ keystone_credentials = {
     'tenant_name': 'mcntub',
     'auth_url': 'http://bart.cloudcomplab.ch:5000/v2.0'
 }
-
-
-
 stack_name="teststack influxdb-cyclops2"
 template_file="influxdb.yaml"
 
 class HeatClient():
     def __init__(self):
         self.auth_token = self.get_auth_token()
-        heat = Client('1', endpoint=heat_url, token=self.auth_token)
+        heat_credentials = {
+            'endpoint': heat_url,
+            'token': self.auth_token
+        }
+        heat = Client('1', **heat_credentials)
         self.stack_manager = heat.stacks        
         self.stack_id = self.get_stack_id()
         self.stack_list = []
