@@ -2,20 +2,22 @@
 #     URL: https://github.com/AleDanish
 
 from heatclient.client import Client
+import keystoneclient.v2_0.client as ksclient
 
-token='6c47095dd45d40f4bff5443c26044eb4'
-tenant='mcntub'
+tenant_name='mcntub'
 tenant_id='64969ad482c643cb8439a55e648e5ebb'
 heat_url='http://bart.cloudcomplab.ch:8004/v1/' + tenant_id
+auth_url="http://bart.cloudcomplab.ch:5000/v2.0"
+username="alessandropernafini"
+password="unib0bart"
 
 class CloudOrchestrator():
-    def __init__(self, region):
+    def __init__(self):
         self.auth_token = self.get_auth_token()
         heat = Client('1', endpoint=heat_url, token=self.auth_token)
         self.stack_manager = heat.stacks        
         self.stack_id = self.get_stack_id()
         self.stack_list = []
-        self.region = region
         self.auth_token = self.get_auth_token()
 
     def get_stack_list(self):
@@ -36,17 +38,20 @@ class CloudOrchestrator():
         return None
 
     def get_auth_token(self):
-        self.auth_token = open('/home/ubuntu/authtoken', 'r').read().rstrip()
-        return self.auth_token
+        keystone = ksclient.Client(auth_url=auth_url, username=username, password=password, tenant_name=tenant_name)
+        token = keystone.auth_ref['token']['id']
+        return token
+#        self.auth_token = open('/home/ubuntu/authtoken', 'r').read().rstrip()
+#        return self.auth_token
 
     def get_stack_id(self):
         self.stack_id = open('/home/ubuntu/stackid', 'r').read().rstrip()
         return self.stack_id
 
-    def create_stack(self):
+    def create_stack(self, params):
         if self.stack_manager is None:
             self.__init__(self.auth_token)
-        print "self.stack_manager.create()"
+        self.stack_manager.create()
 
     def delete_stack(self):
         if self.stack_id is None :

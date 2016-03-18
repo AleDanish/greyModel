@@ -29,12 +29,19 @@ def getGreyModelValues(composedList):
 
 def moveVM(threadName):
     migrationVM = True
-    region = "RegionOne"
-    co_old = CloudOrchestrator(region)
+    co_old = CloudOrchestrator()
     stack = co_old.get_stack()
     print "stack: ", stack
-    
-    co_new = CloudOrchestrator(region)
+
+    #aspetto migrazione dati
+
+    region_new = "RegionOne"
+    co_new = CloudOrchestrator()
+    params = {'stack_name': stack_name,
+              'template': influxdb.yaml,
+              'parameters': form.cleaned_data,}
+    result = api.heat.stacks_create(request, params)
+    co_new.create_stack(params)
 
 #    co_old.delete_stack()
     migrationVM = False
