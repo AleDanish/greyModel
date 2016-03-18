@@ -7,7 +7,7 @@ import time
 import random
 import thread
 from zabbix_api import APIConnector
-from cloudManagement import CloudOrchestrator
+from heat_client import HeatClient
 
 zabbix_url='http://137.204.57.236:8008/zabbix/'
 zabbix_user='azanni'
@@ -33,16 +33,13 @@ def moveVM(threadName):
     stack = co_old.get_stack()
     print "stack: ", stack
 
-    #aspetto migrazione dati
+    #migrazione dati
 
     region_new = "RegionOne"
     co_new = CloudOrchestrator()
-    params = {'stack_name': stack_name,
-              'template': influxdb.yaml,
-              'parameters': form.cleaned_data,}
-    result = api.heat.stacks_create(request, params)
-    co_new.create_stack(params)
+    co_new.create_stack(region_new)
 
+#    TODO: 
 #    co_old.delete_stack()
     migrationVM = False
 
