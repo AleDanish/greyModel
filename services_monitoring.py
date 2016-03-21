@@ -29,15 +29,15 @@ def getGreyModelValues(composedList):
 
 def moveVM(threadName):
     migrationVM = True
-    co_old = CloudOrchestrator()
+    co_old = CloudOrchestrator(None)
     stack = co_old.get_stack()
     print "stack: ", stack
 
     #migrazione dati
 
     region_new = "RegionOne"
-    co_new = CloudOrchestrator()
-    co_new.create_stack(region_new)
+    co_new = CloudOrchestrator(region_new)
+    co_new.create_stack()
 
 #    TODO: 
 #    co_old.delete_stack()
