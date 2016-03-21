@@ -15,7 +15,7 @@ keystone_credentials = {
     'auth_url': 'http://bart.cloudcomplab.ch:5000/v2.0'
 }
 stack_name="teststack influxdb-cyclops2"
-template_file="influxdb.yaml"
+template_file="data/influxdb.yaml"
 
 class HeatClient():
     def __init__(self, region_name):
