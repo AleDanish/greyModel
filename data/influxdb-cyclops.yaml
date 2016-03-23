@@ -133,15 +133,17 @@ resources:
               #!/bin/bash
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
-              echo stack_id >> /home/ubuntu/stackid
-              source /home/ubuntu/bart_auth
-              keystone token-get | grep -w "id" | awk '{print $4}' >> /home/ubuntu/authtoken
               cd /home/ubuntu/influxdb_cluster_configuration
               bash cluster_config.sh
+              echo stack_id >> /home/ubuntu/stackid
+              echo influxdb_ip >> /home/ubuntu/influxdb_floatingip
+              source /home/ubuntu/bart_auth
+              keystone token-get | grep -w "id" | awk '{print $4}' >> /home/ubuntu/authtoken
               #TODO:
               #sh services_orchestration.sh
             params:
               stack_id: { get_param: "OS::stack_id"}
+              influxdb_ip: { get_attr: [influxdb_floating_ip, floating_ip_address] }
 
   rcb_si:
     type: OS::Nova::Server

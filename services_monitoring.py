@@ -29,15 +29,15 @@ def getGreyModelValues(composedList):
 
 def moveVM(threadName):
     migrationVM = True
-    co_old = CloudOrchestrator(None)
-    stack = co_old.get_stack()
-    print "stack: ", stack
+    co_old = HeatClient(None)
+    
+    region_new = "RegionOne"
+    co_new = HeatClient(region_new)
+    stack = co_new.create_stack()
+    print "stack_new: ", stack
+    #stack_new = heat.stacks.get(stack_id=uid).to_dict()
 
     #migrazione dati
-
-    region_new = "RegionOne"
-    co_new = CloudOrchestrator(region_new)
-    co_new.create_stack()
 
 #    TODO: 
 #    co_old.delete_stack()
@@ -85,4 +85,4 @@ while True:
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise
-    time.sleep(10)
+    time.sleep(30)
