@@ -134,7 +134,7 @@ resources:
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
               cd /home/ubuntu/influxdb_cluster_configuration
-              bash cluster_config.sh
+              bash cluster_config.sh influxdb_ip
               echo stack_id >> /home/ubuntu/stackid
               echo influxdb_ip >> /home/ubuntu/influxdb_floatingip
               source /home/ubuntu/bart_auth
