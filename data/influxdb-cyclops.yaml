@@ -33,6 +33,10 @@ parameters:
       - m1.medium
       description: must be a valid OpenStack flavor.
 
+  influxdb_floating_ip_old:
+    description: Ip address of the old VM to migrate
+    type: string
+
   sshkey:
     description: The ssh key name to use with all SM VMs
     type: string
@@ -134,16 +138,17 @@ resources:
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
               cd /home/ubuntu/influxdb_cluster_configuration
-              bash cluster_config.sh influxdb_ip
+              bash cluster_config.sh influxdb_ip_old
               echo stack_id >> /home/ubuntu/stackid
-              echo influxdb_ip >> /home/ubuntu/influxdb_floatingip
+              echo influxdb_ip_new >> /home/ubuntu/influxdb_floatingip
               source /home/ubuntu/bart_auth
               keystone token-get | grep -w "id" | awk '{print $4}' >> /home/ubuntu/authtoken
               #TODO:
               #sh services_orchestration.sh
             params:
               stack_id: { get_param: "OS::stack_id"}
-              influxdb_ip: { get_attr: [influxdb_floating_ip, floating_ip_address] }
+              influxdb_ip_new: { get_attr: [influxdb_floating_ip, floating_ip_address] }
+              influxdb_ip_old: { get_param: influxdb_floating_ip_old }
 
   rcb_si:
     type: OS::Nova::Server
