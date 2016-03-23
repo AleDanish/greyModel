@@ -105,9 +105,3 @@ class HeatClient():
         if self.stack_id is None :
             self.stack_id = self.get_stack_id()
         self.stack_manager.delete(self.stack_id)
-
-    def get_ip_address(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        self.ip_address = s.getsockname()[0]
-        return self.ip_address
