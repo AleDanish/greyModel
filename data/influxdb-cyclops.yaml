@@ -36,6 +36,7 @@ parameters:
   influxdb_floating_ip_old:
     description: Ip address of the old VM to migrate
     type: string
+    default: ''
 
   sshkey:
     description: The ssh key name to use with all SM VMs
@@ -138,7 +139,10 @@ resources:
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
               cd /home/ubuntu/influxdb_cluster_configuration
-              bash cluster_config.sh influxdb_ip_old
+              if not influxdb_ip_old:
+                  bash cluster_config.sh influxdb_ip_old
+              else:
+                  bash cluster_config.sh
               echo stack_id >> /home/ubuntu/stackid
               echo influxdb_ip_new >> /home/ubuntu/influxdb_floatingip
               source /home/ubuntu/bart_auth
