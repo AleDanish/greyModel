@@ -78,6 +78,8 @@ class HeatClient():
         return self.floating_ip
 
     def create_stack(self):
+        Tcreate_stack_start=time.time()
+
         if self.stack_manager is None:
             self.__init__(self.auth_token)
         tpl_files, template = template_utils.get_template_contents(template_file)
@@ -112,7 +114,7 @@ class HeatClient():
                 while stack['stack_status'] == 'CREATE_IN_PROGRESS':
                     print "Stack in state: {}".format(stack['stack_status'])
                     stack = self.stack_manager.get(stack_id=uid).to_dict()
-                    time.sleep(10)
+                    time.sleep(5)
                 if stack['stack_status'] == 'CREATE_COMPLETE':
                     print "Stack succesfully created."
                 else:
@@ -120,6 +122,10 @@ class HeatClient():
                 stack_created = True
             except HTTPConflict:
                 print "Stack ", stack_name_full, " already exists"
+
+        Tcreate_stack=time.time()-Tcreate_stack_start
+        print "Time to create the new stack: ", Tcreate_stack, "s"
+
         return stack
 
     def delete_stack(self):

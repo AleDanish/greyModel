@@ -9,6 +9,9 @@ import thread
 from zabbix_api import APIConnector
 from heat_client import HeatClient
 
+#For monitoring purpose
+import time
+
 zabbix_url='http://137.204.57.236:8008/zabbix/'
 zabbix_user='azanni'
 zabbix_pass='azanni'
@@ -43,6 +46,8 @@ def moveVM():
 #   co_old.delete_stack()
     migrationVM = False
 
+Tstart=time.time()
+
 migrationVM = False
 gateway = JavaGateway()
 connector = APIConnector()
@@ -56,7 +61,12 @@ for host in host_ids:
     hosts_cpu_util.append(MyList())
     hosts_mem.append(MyList())
 
+Tconfig=time.time()-Tstart
+print "Config time: ", Tconfig, "s"
+
 while True:
+    Tzbx_start=time.time()
+
     cpu_loads = connector.get_cpu_load()
     cpu_util = connector.get_cpu_util()
     mem = connector.get_mem_load()
@@ -68,7 +78,12 @@ while True:
     print "zbx - cpu_util: ", hosts_cpu_util
     print "zbx - mem: ", hosts_mem
 
+    Tzbx=time.time()-Tzbx_start
+    print "Zbx time to read: ", Tzbx, "s"
+
     if len(hosts_cpu_load[0]) > 2:
+        Tgm_start=time.time()
+
         cpu_load_GM = getGreyModelValues(hosts_cpu_load)
         cpu_util_GM = getGreyModelValues(hosts_cpu_util)
         mem_GM = getGreyModelValues(hosts_mem)
@@ -76,13 +91,21 @@ while True:
         print "next value GM - cpu_util: ", cpu_util_GM
         print "next value GM - mem: ", mem_GM
 
+        Tgm=time.time()-Tgm_start
+        print "Time to get Grey Model value: ", Tgm, "s"
+
         avg=reduce(lambda x, y: x + y, cpu_load_GM)/len(cpu_load_GM)
         print avg
         if (avg > trigger_value) and (migrationVM == False):
             print "Trigger activated. I'm going to move the VM state."
             try:
+                Tmovetot_start=time.time()
+
                 moveVM()
+
+                Tmovetot=time.time()-Tmovetot_start
+                print "Time to get Grey Model value: ", Tgm, "s"
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise
-    time.sleep(60)
+    time.sleep(10)
