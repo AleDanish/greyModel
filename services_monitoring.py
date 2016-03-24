@@ -104,7 +104,7 @@ while True:
                 moveVM()
 
                 Tmovetot=time.time()-Tmovetot_start
-                print "Time to get Grey Model value: ", Tgm, "s"
+                print "Total time to migrate the VMs: ", Tgm, "s"
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise

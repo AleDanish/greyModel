@@ -136,20 +136,34 @@ resources:
           str_replace:
             template: |
               #!/bin/bash
+              Tstart=$(date +%s%3N)
+
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
               echo influxdb_ip_new >> /home/ubuntu/influxdb_floatingip
               cd /home/ubuntu/influxdb_cluster_configuration
               influxdb_ip_old = ip_old
+
+              Tconfig_start=$(date +%s%3N)
               if [$influxdb_ip_old == ""]; then
                   bash cluster_config.sh
               else
                   bash cluster_config.sh ip_old
               fi
+              Tconfig_end=$(date +%s%3N)
+
               echo stack_id >> /home/ubuntu/stackid
               source /home/ubuntu/bart_auth
               keystone token-get | grep -w "id" | awk '{print $4}' >> /home/ubuntu/authtoken
+
+              Tend=$(date +%s%3N)
+              Tconfig=$(((Tconfig_end-Tconfig_start)/1000))
+              Ttotal=$(((Tend-Tstart)/1000))
+              echo "Time to config: " $Tconfig >> /home/ubuntu/times_influxdb
+              echo "Time total: " $Ttotal >> /home/ubuntu/times_influxdb
+
               #TODO:
+#              cd greyModel
               #sh services_orchestration.sh
             params:
               stack_id: { get_param: "OS::stack_id"}
@@ -169,17 +183,44 @@ resources:
           str_replace:
             template: |
               #!/bin/bash
+              Tstart=$(date +%s%3N)
+
               cd /home/ubuntu/cyclops_configuration
               bash cyclops_config.sh influxdb_ip
+
+              Tconfig_end=$(date +%s%3N)
+
               cd /home/ubuntu/cyclops-udr/install
               bash deploy_udr.sh
+
+              Tudr_build=$(date +%s%3N)
+
               cd /home/ubuntu/cyclops-rc/install
               bash deploy_rc.sh
+
+              Trc_build=$(date +%s%3N)
+
               cd /home/ubuntu/cyclops-billing/install
               bash deploy_billing.sh
+
+              Tbilling_build=$(date +%s%3N)
+
               service tomcat7 restart
               rabbitmq-plugins enable rabbitmq_management
               service rabbitmq-server restart
+
+              Tend=$(date +%s%3N)
+              Tconfig=$(((Tconfig_end-Tstart)/1000))
+              Tudr=$(((Tudr_build-Tconfig_end)/1000))
+              Trc=$(((Trc_build-Tudr_build)/1000))
+              Tbilling=$(((Tbilling_build-Trc_build)/1000))
+              Ttotal=$(((Tend-Tstart)/1000))
+              echo "Cyclops-InfluxDb configuration: " $Tconfig >> /home/ubuntu/times_rcb
+              echo "UDR build: " $Tudr >> /home/ubuntu/times_rcb
+              echo "RC build: " $Trc >> /home/ubuntu/times_rcb
+              echo "Billing build: " $Tbilling >> /home/ubuntu/times_rcb
+              echo "Total time: " $Ttotal >> /home/ubuntu/times_rcb
+
             params:
               influxdb_ip: { get_attr: [influxdb_floating_ip, floating_ip_address] }
 
