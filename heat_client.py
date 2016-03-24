@@ -5,6 +5,7 @@ from heatclient.client import Client
 import keystoneclient.v2_0.client as ksclient
 from heatclient.common import template_utils
 from heatclient.exc import HTTPConflict
+from heatclient.common import utils
 import time
 
 tenant_name='mcntub'
@@ -36,7 +37,8 @@ class HeatClient():
         self.stack_id = self.get_stack_id()
         self.stack_list = []
         self.auth_token = self.get_auth_token()
-        self.ip_address = self.get_ip_address()
+        self.floating_ip = None
+        self.floating_ip = self.get_floating_ip()
 
     def get_stack_list(self):
         if self.stack_manager is None:
@@ -63,8 +65,13 @@ class HeatClient():
 
     def get_stack_id(self):
         if self.stack_id is None:
-           self.stack_id = open('/home/ubuntu/stackid', 'r').read().rstrip() 
+            self.stack_id = open('/home/ubuntu/stackid', 'r').read().rstrip() 
         return self.stack_id
+
+    def get_floating_ip(self):
+        if self.floating_ip is None:
+            self.floating_ip = open('/home/ubuntu/influxdb_floatingip', 'r').read().rstrip()
+        return self.floating_ip
 
     def create_stack(self):
         if self.stack_manager is None:
@@ -78,12 +85,14 @@ class HeatClient():
             try:
                 stack_name_full = stack_name + str(stack_number)
                 print "stack name: ", stack_name_full
-                params = {
+                params = ['influxdb_floating_ip_old=' + self.get_floating_ip()]
+                kwargs = {
                    'stack_name': stack_name_full,
-                   'template': template
+                   'template': template,
+                   'parameters': utils.format_parameters(params)
                 }
-                self.stack_manager.validate(**params)
-                stack=self.stack_manager.create(**params)
+                self.stack_manager.validate(**kwargs)
+                stack=self.stack_manager.create(**kwargs)
                 print "stack: ", stack
                 uid=stack['stack']['id']
                 self.stack_id = uid
@@ -102,6 +111,6 @@ class HeatClient():
         return stack
 
     def delete_stack(self):
-        if self.stack_id is None :
+        if self.stack_id is None:
             self.stack_id = self.get_stack_id()
         self.stack_manager.delete(self.stack_id)
