@@ -138,13 +138,13 @@ resources:
               #!/bin/bash
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
-              cd /home/ubuntu/influxdb_cluster_configuration
               echo influxdb_ip_new >> /home/ubuntu/influxdb_floatingip
+              cd /home/ubuntu/influxdb_cluster_configuration
               influxdb_ip_old = ip_old
-              if [influxdb_ip_old == ""]; then
+              if [$influxdb_ip_old == ""]; then
                   bash cluster_config.sh
               else
-                  bash cluster_config.sh influxdb_ip_old
+                  bash cluster_config.sh ip_old
               fi
               echo stack_id >> /home/ubuntu/stackid
               source /home/ubuntu/bart_auth
