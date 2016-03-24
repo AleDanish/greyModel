@@ -27,7 +27,7 @@ def getGreyModelValues(composedList):
         values.append(float("{0:.4f}".format(nextValue)))
     return values
 
-def moveVM(threadName):
+def moveVM():
     migrationVM = True
     co_old = HeatClient(None)
     
@@ -37,10 +37,10 @@ def moveVM(threadName):
     print "stack_new: ", stack
     #stack_new = heat.stacks.get(stack_id=uid).to_dict()
 
-    #migrazione dati
-
-#    TODO: 
-#    co_old.delete_stack()
+#    TODO:
+#   while not  fine migrazione:
+#        continuo a copiare dati
+#   co_old.delete_stack()
     migrationVM = False
 
 migrationVM = False
@@ -81,7 +81,7 @@ while True:
         if (avg > trigger_value) and (migrationVM == False):
             print "Trigger activated. I'm going to move the VM state."
             try:
-                thread.start_new_thread(moveVM, ("Thread-1", ))
+                moveVM()
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise
