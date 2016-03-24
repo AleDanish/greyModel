@@ -85,4 +85,4 @@ while True:
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise
-    time.sleep(30)
+    time.sleep(60)
