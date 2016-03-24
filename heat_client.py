@@ -70,7 +70,11 @@ class HeatClient():
 
     def get_floating_ip(self):
         if self.floating_ip is None:
-            self.floating_ip = open('/home/ubuntu/influxdb_floatingip', 'r').read().rstrip()
+            try:
+                self.floating_ip = open('/home/ubuntu/influxdb_floatingip', 'r').read().rstrip()
+            except IOError:
+                self.floating_ip = None
+                print "Warning: no influxdb_floatingip found"
         return self.floating_ip
 
     def create_stack(self):
@@ -85,12 +89,20 @@ class HeatClient():
             try:
                 stack_name_full = stack_name + str(stack_number)
                 print "stack name: ", stack_name_full
-                params = ['influxdb_floating_ip_old=' + self.get_floating_ip()]
-                kwargs = {
-                   'stack_name': stack_name_full,
-                   'template': template,
-                   'parameters': utils.format_parameters(params)
-                }
+                kwargs = None
+                float_ip = self. get_floating_ip()
+                if float_ip:
+                    params = ['influxdb_floating_ip_old=' + float_ip]
+                    kwargs = {
+                       'stack_name': stack_name_full,
+                       'template': template,
+                       'parameters': utils.format_parameters(params)
+                    }
+                else:
+                    kwargs = {
+                       'stack_name': stack_name_full,
+                       'template': template
+                    }
                 self.stack_manager.validate(**kwargs)
                 stack=self.stack_manager.create(**kwargs)
                 print "stack: ", stack
