@@ -8,6 +8,7 @@ import random
 import thread
 from zabbix_api import APIConnector
 from heat_client import HeatClient
+import sys
 
 #For monitoring purpose
 import time
@@ -44,6 +45,7 @@ def moveVM():
 #   while not  fine migrazione:
 #        continuo a copiare dati
 #   co_old.delete_stack()
+#   new influxDB-VM config -> to master
     migrationVM = False
 
 Tstart=time.time()
@@ -104,7 +106,7 @@ while True:
                 moveVM()
 
                 Tmovetot=time.time()-Tmovetot_start
-                print "Total time to migrate the VMs: ", Tgm, "s"
+                print "Total time to migrate the VMs: ", Tmovetot, "s"
             except:
                 print "Cannot move VM. Unexpected error:", sys.exc_info()[0]
                 raise
