@@ -139,10 +139,11 @@ resources:
               rm /home/ubuntu/stackid
               rm /home/ubuntu/authtoken
               cd /home/ubuntu/influxdb_cluster_configuration
-              if not influxdb_ip_old:
-                  bash cluster_config.sh influxdb_ip_old
-              else:
+              if [influxdb_ip_old == ""]; then
                   bash cluster_config.sh
+              else
+                  bash cluster_config.sh influxdb_ip_old
+              fi
               echo stack_id >> /home/ubuntu/stackid
               echo influxdb_ip_new >> /home/ubuntu/influxdb_floatingip
               source /home/ubuntu/bart_auth
